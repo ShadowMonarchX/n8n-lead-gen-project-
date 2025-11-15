@@ -1,0 +1,7 @@
+# Ignore n8n persistent data directory
+n8n_data/
+
+# Ignore all Docker secrets, keys, and environment files
+.env
+.env.*
+docker-compose.override.yml
