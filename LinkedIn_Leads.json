@@ -1,0 +1,4832 @@
+{
+  "name": "LinkedIn_Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "scraping_service",
+              "value": "ScraperAPI",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "search_query",
+              "value": "mobile app development services",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "max_results",
+              "value": 10,
+              "type": "number"
+            },
+            {
+              "id": "id-4",
+              "name": "linkedin",
+              "value": "LinkedIn",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "8d48face-bd9c-4c4f-9a11-4d85ac66db93",
+      "name": "Workflow Configuration1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4144,
+        -4144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.error }}",
+              "operator": {
+                "type": "string",
+                "operation": "notExists"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $json.data }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "id-3",
+              "leftValue": "={{ $json.results }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d469a009-f646-4a16-a781-b3815e81b3e0",
+      "name": "Check ScraperAPI Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3552,
+        -4144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "{{ $json.error }}",
+              "operator": {
+                "type": "string",
+                "operation": "notExists"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "{{ $json.data && $json.data[0] ? $json.data[0].email : '' }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "id-3",
+              "leftValue": "{{ $json.data && $json.data[0] ? $json.data[0].phone : '' }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "4bdd04ca-244f-49cb-a022-245227753421",
+      "name": "Filter Valid Prospects",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2848,
+        -3936
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json['Outreach Status'] }}",
+              "rightValue": "Pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $json['Outreach Status'] }}",
+              "operator": {
+                "type": "string",
+                "operation": "empty"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "8bd59b80-bed3-4f7b-946a-f68f75c23ceb",
+      "name": "Check Not Already Contacted",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -3616,
+        -1984
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "id": "008923b1-6b9c-4db7-be98-e47d07b11dc8",
+      "name": "New Prospect Added Trigger",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -4480,
+        -1984
+      ],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "1XYw1wAxq3dgsBJN",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "meeting_link",
+              "value": "https://bit.ly/Innoventix-meetings",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "company_name",
+              "value": "Innoventix",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "email_subject",
+              "value": "Let's discuss your mobile app development needs",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "sms_message",
+              "value": "Hi! We specialize in mobile app development. Book a meeting: https://bit.ly/Innoventix-meetings",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "ec4671d3-d46a-4f2d-a5cd-bf41ddedfd11",
+      "name": "Outreach Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3904,
+        -1984
+      ]
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# Standard n8n initialization to get incoming items\ntry:\n    incoming = _items\nexcept NameError:\n    incoming = []\n\nif not isinstance(incoming, list):\n    incoming = [incoming]\n\n# --- Utility Functions ---\n\ndef safe_get(obj, *keys, default=\"\"):\n    \"\"\"\n    Safely retrieves a value from a dictionary using a list of potential keys.\n    Returns the first non-None and non-empty string value found.\n    \"\"\"\n    if not isinstance(obj, dict):\n        return default\n    for k in keys:\n        v = obj.get(k)\n        # Check for None and empty strings\n        if v is not None and v != \"\":\n            return v\n    return default\n\ndef normalize_one(prospect):\n    \"\"\"\n    Maps prospect data from various input keys to a single, standardized output schema.\n    \"\"\"\n    # 1. Handle Name: Try \"name\" or \"fullName\", then combine \"firstName\" and \"lastName\"\n    name = safe_get(prospect, \"name\", \"fullName\")\n    if not name:\n        first = safe_get(prospect, \"firstName\", default=\"\").strip()\n        last = safe_get(prospect, \"lastName\", default=\"\").strip()\n        name = (first + \" \" + last).strip() or \"\" # Use empty string if no name found\n\n    # 2. Extract nested contact fields (email and phone)\n    contact_info = prospect.get(\"contact\") or {}\n    social_media = prospect.get(\"socialMedia\") or {}\n    \n    # 3. Build the standardized output object\n    return {\n        \"name\": name,\n        \"email\": safe_get(prospect, \"email\", \"emailAddress\") or contact_info.get(\"email\", \"\"),\n        \"phone\": safe_get(prospect, \"phone\", \"phoneNumber\") or contact_info.get(\"phone\", \"\"),\n        \"linkedin\": safe_get(prospect, \"linkedin\", \"linkedinUrl\", \"profileUrl\", \"url\"),\n        \"twitter\": safe_get(prospect, \"twitter\", \"twitterUrl\") or social_media.get(\"twitter\", \"\"),\n        \"company\": safe_get(prospect, \"company\", \"companyName\", \"organization\"),\n        \"title\": safe_get(prospect, \"title\", \"jobTitle\", \"position\"),\n        \"location\": safe_get(prospect, \"location\", \"city\", \"region\"),\n        \"industry\": prospect.get(\"industry\", \"\") if isinstance(prospect, dict) else \"\",\n        \"website\": safe_get(prospect, \"website\", \"companyWebsite\", \"profileWebsite\"),\n        \"scrapedAt\": safe_get(prospect, \"scrapedAt\", \"dateScraped\", \"updatedAt\") # Allow retrieving a timestamp\n    }\n\n# --- Main Logic to Process Items ---\n\nprospects = []\n\nfor it in incoming:\n    payload = None\n    \n    # 1. Unwrap the 'json' property if present (common n8n structure)\n    if isinstance(it, dict) and \"json\" in it and it[\"json\"]:\n        payload = it[\"json\"]\n    else:\n        payload = it or {}\n\n    # 2. FIX: Unwrap potential 'body' nesting if present (HTTP Request responses)\n    # The body can be a list or a dict, so we only check for existence of the key.\n    if isinstance(payload, dict) and \"body\" in payload:\n        payload = payload.get(\"body\")\n\n    # 3. Determine the actual list of records from common list containers\n    records = []\n    if isinstance(payload, dict) and isinstance(payload.get(\"results\"), list):\n        # Handles APIs using 'results' key\n        records = payload.get(\"results\")\n    elif isinstance(payload, dict) and isinstance(payload.get(\"data\"), list):\n        # Handles APIs using 'data' key\n        records = payload.get(\"data\")\n    elif isinstance(payload, list):\n        # Handles raw list payload (This now correctly catches the webhook list data)\n        records = payload\n    elif isinstance(payload, dict):\n        # Handles single dict payload\n        records = [payload]\n    # else: records remains []\n\n    # 4. Normalize and append valid records\n    for rec in records:\n        if not isinstance(rec, dict):\n            continue\n        prospects.append(normalize_one(rec))\n\n# 5. Format the final output structure\nresponse = {\n    \"success\": True if prospects else False,\n    \"message\": \"Prospect data received successfully\" if prospects else \"No prospects found in request\",\n    \"count\": len(prospects),\n    \"data\": prospects\n}\n\n# Return the result in n8n's expected format\nreturn [{\"json\": response}]"
+      },
+      "id": "0d1040de-25fc-4458-960b-5b36398cb6ca",
+      "name": "Parse Prospect Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3168,
+        -3936
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Full Name\": \"{{ $json.name }}\",\n  \"Email\": \"{{ $json.email }}\",\n  \"Phone\": \"{{ $json.phone }}\",\n  \"Company\": \"{{ $json.company }}\",\n  \"Title\": \"{{ $json.title }}\",\n  \"LinkedIn\": \"{{ $json.linkedin }}\",\n  \"Location\": \"{{ $json.location }}\",\n  \"Industry\": \"{{ $json.industry }}\",\n  \"Outreach Status\": \"Pending\",\n  \"Email Validation\": \"Pending\",\n  \"Phone Validation\": \"Pending\",\n  \"Date Added\": \"{{ $now.toISO() }}\",\n  \"Scraped At\": \"{{ $json.scrapedAt || $now.toISO() }}\"\n}",
+        "options": {}
+      },
+      "id": "03634f0c-3c91-4ca3-ab61-4fb139514a1e",
+      "name": "Format Prospect Fields (Before Sheets)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2240,
+        -3936
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "Full Name": "={{ $json[\"Full Name\"] }}",
+            "Email": "={{ $json[\"Email\"] }}",
+            "Phone": "={{ \"'\" + $json[\"Phone\"] }}",
+            "Company": "={{ $json[\"Company\"] }}",
+            "Title": "={{ $json[\"Title\"] }}",
+            "LinkedIn": "={{ $json[\"LinkedIn\"] }}",
+            "Location": "={{ $json[\"Location\"] }}",
+            "Outreach Status": "={{ $json[\"Outreach Status\"] }}",
+            "Email Validation": "={{ $json[\"Email Validation\"] }}",
+            "Phone Validation": "={{ $json[\"Phone Validation\"] }}",
+            "Date Added": "={{ $json[\"Date Added\"] }}",
+            "Scraped At": "={{ $json[\"Scraped At\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Outreach Status",
+              "displayName": "Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "c1c53c27-6082-433c-8740-bc970e2aa59c",
+      "name": "Append Prospect to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1776,
+        -3936
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "={{ $('Outreach Configuration').first().json.email_subject }}",
+        "message": "=<p>Hi {{ $json['Full Name'] }},</p>\n\n<p>I hope this message finds you well. I came across your profile and was impressed by your work in the industry.</p>\n\n<p>I wanted to reach out to introduce our mobile app development services. We specialize in creating innovative, user-friendly mobile applications that help businesses like yours grow and engage with their customers more effectively.</p>\n\n<p>I'd love to schedule a brief meeting to discuss how we can support your goals. You can book a time that works for you here: <a href=\"{{ $('Outreach Configuration').first().json.meeting_link }}\">Schedule a Meeting</a></p>\n\n<p>Looking forward to connecting!</p>\n\n<p>Best regards,<br>\nYour Name<br>\nYour Company<br>\nYour Contact Information</p>",
+        "options": {}
+      },
+      "id": "c525ac9c-56c7-4088-8911-4fe4a31319a7",
+      "name": "Send Email Outreach2",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        592,
+        -2176
+      ],
+      "webhookId": "bac9f5e6-ad10-4486-a0ce-ba42b17c8ef9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WvHWXyYLnxC6ZmHT",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "try:\n    incoming = _items\nexcept NameError:\n    incoming = []\n\nif not isinstance(incoming, list):\n    incoming = [incoming]\n\nPRESERVE_FOR_SHEETS = True\n\ndef is_valid_email(email):\n    if not email or not isinstance(email, str):\n        return False\n    email = email.strip()\n    if \"@\" not in email or \".\" not in email:\n        return False\n    if email.count(\"@\") != 1:\n        return False\n    local, domain = email.split(\"@\")\n    if not local or not domain or \".\" not in domain:\n        return False\n    return True\n\ndef is_valid_phone(phone):\n    if not phone or not isinstance(phone, str):\n        return False\n    s = phone.strip()\n    if s.startswith(\"+\"):\n        s2 = \"\".join(ch for ch in s[1:] if ch.isdigit())\n        s2 = \"+\" + s2 if s2 else \"\"\n    else:\n        s2 = \"\".join(ch for ch in s if ch.isdigit())\n    if not s2:\n        return False\n    digits = s2[1:] if s2.startswith(\"+\") else s2\n    if len(digits) < 7 or len(digits) > 20:\n        return False\n    return True\n\ndef safe_get(obj, *keys, default=\"\"):\n    if not isinstance(obj, dict):\n        return default\n    for k in keys:\n        v = obj.get(k)\n        if v not in (None, \"\"):\n            return v\n    return default\n\ndef normalize_email(email):\n    if not email or not isinstance(email, str):\n        return \"\"\n    return email.strip().lower()\n\ndef normalize_phone(phone):\n    if not phone or not isinstance(phone, str):\n        return \"\"\n    s = phone.strip()\n    if s.startswith(\"+\"):\n        digits = \"\".join(ch for ch in s if ch.isdigit())\n        return \"+\" + digits if digits else \"\"\n    return \"\".join(ch for ch in s if ch.isdigit())\n\ndef process_prospect(prospect):\n    if not isinstance(prospect, dict):\n        return None\n\n    name = safe_get(prospect, \"Full Name\", \"Name\", \"full_name\")\n    raw_email = safe_get(prospect, \"Email\", \"email\", \"Email Address\")\n    raw_phone = safe_get(prospect, \"Phone\", \"phone\", \"Phone Number\", \"Mobile\")\n\n    email = normalize_email(raw_email)\n    phone = normalize_phone(raw_phone)\n\n    if not is_valid_email(email):\n        email = \"\"\n    if not is_valid_phone(phone):\n        phone = \"\"\n\n    meeting = safe_get(prospect, \"meeting_link\", \"Meeting Link\", \"meeting\")\n\n    return {\n        \"Full Name\": name,\n        \"Email\": email,\n        \"Phone Number\": phone,\n        \"meeting_link\": meeting\n    }\n\nout = []\n\nfor item in incoming:\n    if isinstance(item, dict) and \"json\" in item and isinstance(item[\"json\"], dict):\n        data = item.get(\"json\", {})\n    elif isinstance(item, dict):\n        data = item\n    else:\n        data = {}\n    r = process_prospect(data)\n    if r:\n        out.append({\"json\": r})\n\nreturn out\n"
+      },
+      "id": "87c79b0d-2c5d-4cf4-ac3e-902cb376abb0",
+      "name": "Validate Format1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -2176
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "12vXsnz22FPrr18CaOrrgnCAK4-ofQLhSdqlipt_zyKA",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12vXsnz22FPrr18CaOrrgnCAK4-ofQLhSdqlipt_zyKA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Outreach Status": "Contacted",
+            "Email Validation": "Invalid"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Status",
+              "displayName": "Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "952a6bec-f8fa-46ca-99a6-249307035c1a",
+      "name": "TRUE: Update Status - Successful2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        992,
+        -2176
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "12vXsnz22FPrr18CaOrrgnCAK4-ofQLhSdqlipt_zyKA",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12vXsnz22FPrr18CaOrrgnCAK4-ofQLhSdqlipt_zyKA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12vXsnz22FPrr18CaOrrgnCAK4-ofQLhSdqlipt_zyKA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $json.Email }}",
+            "Outreach Status": "Failed (Email Error)",
+            "Email Validation": "Invalid"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Outreach Status",
+              "displayName": "Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4c8ced4f-d1cd-42ec-9a62-9be752680d1e",
+      "name": "FALSE: Update Status - Failed2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        992,
+        -1904
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "from": "+91 9510117047",
+        "to": "={{ $json[\"\"+'Phone Number'] }}",
+        "message": "={{\"Hello\"+\" \"+ $json[\"Full Name\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -1680
+      ],
+      "id": "95482faa-d025-4d56-a82f-a2f4e2285ff2",
+      "name": "Send an SMS/MMS/WhatsApp message1",
+      "credentials": {
+        "twilioApi": {
+          "id": "XbnJR4kjjApTMBMG",
+          "name": "Twilio account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "text": "==Generate a cold outreach email for:\n\nLead Name: {{ $json['Full Name'] }}\nTitle: {{ $json.Title }}\nCompany: {{ $json.Company }}\nLocation: {{ $json.Location }}\nIndustry: {{ $json.Industry }}\n\nOutreach Context: Introduce our mobile app development services (Company Name: {{ $json.company_name }}). The tone must be professional and highly personalized. Acknowledge their role and industry. The call to action is to book a meeting here: {{ $('Outreach Configuration').first().json.meeting_link }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "subject",
+              "description": "The subject line of the email"
+            },
+            {
+              "name": "body",
+              "description": "The HTML body content of the email, including greeting and sign-off."
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "You are the Email Marketing Agent. Your task is to generate a compelling, personalized cold outreach email tailored to a specific lead. The tone must be professional, direct, and focused on solving the lead's specific pain points. Use a friendly, consultative voice, avoiding generic sales jargon.\n\nCRITICAL CONSTRAINT: You MUST return ONLY structured data. Do not include any introductory text or explanations."
+        }
+      },
+      "id": "121d6c7c-ca79-4218-b2f0-33c64e54cb39",
+      "name": "AI: Generate Email Content",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -2560,
+        -1744
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {
+          "senderName": "={{ $json.sender_name }}"
+        }
+      },
+      "id": "35f9d4c6-0fa0-47bd-b623-df4de828a63c",
+      "name": "Send AI Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -2064,
+        -1744
+      ],
+      "webhookId": "c2feb603-51ec-42bf-afe5-217bfbbb3497",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WvHWXyYLnxC6ZmHT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "5cfb78f1-407e-403c-bd7d-2d9fa50f7057",
+      "name": "Set Success Status",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -1696,
+        -1744
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email Outreach Status": "Successs",
+            "Email": "={{ $json[\"Email\"] }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "03391485-3993-4058-abf2-d8dfb7c68fd4",
+      "name": "Update Status: Sent",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1152,
+        -1760
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Validate Format').item.json['Email Validation'] }}",
+              "rightValue": "Valid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6e9e14cb-b2d6-42ca-8439-4617182bfa6d",
+      "name": "Filter Valid Emails",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3024,
+        -1728
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email Validation": "Invalid",
+            "Email": "={{ $json[\"Email\"] }}",
+            "SMS Outreach Status": "Failed"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d79ec3b6-a8b9-42e1-af4c-bccf3ec1980b",
+      "name": "Update Status: Invalid Email",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2608,
+        -1232
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Validate Format').item.json['Phone Validation'] }}",
+              "rightValue": "Valid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b3ae05df-0c0c-4808-935c-de77529e2eb9",
+      "name": "Filter Valid Phone Numbers",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3024,
+        -2208
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "Outreach Status",
+              "value": "SMS Sent",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "199edca0-4e43-445f-888e-e2e1c50dafd0",
+      "name": "Set SMS Success Status",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1696,
+        -2624
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "SMS Outreach Status": "Failed"
+          },
+          "matchingColumns": [
+            "Phone"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "3c24cc6e-4b99-48fb-8700-c4109ee7ef13",
+      "name": "Update Status: SMS Failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1696,
+        -2224
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=Generate a cold outreach SMS for:\n\nLead: {{ $json[\"Full Name\"] }} at {{ $json.Company }}\nRole: {{ $json.Title }}\n\nFocus: Introduce mobile app development services. Keep it brief, professional, and include the meeting link for the call to action: {{ $json.meeting_link }}\n\nCRITICAL: The final message must be under 160 characters, including the link.",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "message",
+              "description": "The SMS message content (max 160 characters)"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "=You are an SMS Marketing Agent. Your task is to generate a brief, compelling cold outreach SMS message tailored to a specific lead. The message MUST be under 160 characters. Be direct, professional, and include a clear call to action.\n\nCRITICAL CONSTRAINTS:\n- Maximum 160 characters\n- Professional and concise tone\n- Clear call to action\n- Return ONLY structured data"
+        }
+      },
+      "id": "64b83c50-5b1c-4401-a68f-63bc17146aa9",
+      "name": "AI: Generate SMS Content",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -2560,
+        -2624
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "try:\n    incoming = _items\nexcept NameError:\n    incoming = []\n\nif not isinstance(incoming, list):\n    incoming = [incoming]\n\nPRESERVE_FOR_SHEETS = True\n\n# --- Utility Functions ---\n\ndef is_valid_email(email):\n    \"\"\"Checks if a string looks like a valid email address structure.\"\"\"\n    if not email or not isinstance(email, str):\n        return False\n    email = email.strip()\n    if \"@\" not in email or \".\" not in email:\n        return False\n    if email.count(\"@\") != 1:\n        return False\n    local, domain = email.split(\"@\")\n    if not local or not domain or \".\" not in domain:\n        return False\n    return True\n\ndef is_valid_phone(phone):\n    \"\"\"Checks if a string contains enough digits to be a phone number.\"\"\"\n    if not phone or not isinstance(phone, str):\n        return False\n    s = phone.strip()\n    # Check if the number has enough digits (min 7)\n    digits = \"\".join(ch for ch in s if ch.isdigit())\n    if len(digits) < 7 or len(digits) > 20:\n        return False\n    return True\n\ndef safe_get(obj, *keys, default=\"\"):\n    \"\"\"Safely retrieves a value using one of several possible keys.\"\"\"\n    if not isinstance(obj, dict):\n        return default\n    for k in keys:\n        v = obj.get(k)\n        if v not in (None, \"\"):\n            return v\n    return default\n\ndef normalize_email(email):\n    \"\"\"Standardizes email to lowercase and strips whitespace.\"\"\"\n    if not email or not isinstance(email, str):\n        return \"\"\n    return email.strip().lower()\n\ndef normalize_phone(phone):\n    \"\"\"Strips all non-digit characters from the phone number.\"\"\"\n    if not phone or not isinstance(phone, str):\n        return \"\"\n    s = phone.strip()\n    # Handle optional plus sign for international formatting\n    if s.startswith(\"+\"):\n        digits = \"\".join(ch for ch in s if ch.isdigit())\n        return \"+\" + digits if digits else \"\"\n    return \"\".join(ch for ch in s if ch.isdigit())\n\n# --- Main Processing Logic ---\n\ndef process_prospect(prospect):\n    if not isinstance(prospect, dict):\n        return None\n\n    # CRITICAL CHANGE: Start with a copy of the entire input dict to preserve all original fields.\n    output_data = dict(prospect)\n\n    # --- Normalization and Field Extraction ---\n    \n    name = safe_get(prospect, \"Full Name\", \"Name\", \"full_name\")\n    raw_email = safe_get(prospect, \"Email\", \"email\", \"Email Address\")\n    raw_phone = safe_get(prospect, \"Phone\", \"phone\", \"Phone Number\", \"Mobile\")\n\n    email = normalize_email(raw_email)\n    phone = normalize_phone(raw_phone)\n    \n    # --- Validation ---\n    \n    # If validation fails, set the normalized value to an empty string\n    validated_email = email if is_valid_email(email) else \"\"\n    validated_phone = phone if is_valid_phone(phone) else \"\"\n\n    # --- Update Output Data with Normalized/Validated Values ---\n    \n    # Overwrite the primary fields with the normalized, validated values\n    output_data[\"Full Name\"] = name\n    output_data[\"Email\"] = validated_email\n    # Use \"Phone Number\" key consistently for normalized output\n    output_data[\"Phone Number\"] = validated_phone\n    \n    # Add the validation flags (these are the new fields for the If node)\n    output_data[\"Email Validation\"] = \"Valid\" if validated_email else \"Invalid\"\n    output_data[\"Phone Validation\"] = \"Valid\" if validated_phone else \"Invalid\"\n    \n    # Ensure meeting link is set if it was found via safe_get but maybe had a different key\n    meeting = safe_get(prospect, \"meeting_link\", \"Meeting Link\", \"meeting\")\n    if meeting:\n        output_data[\"meeting_link\"] = meeting\n\n    return output_data\n\nout = []\n\nfor item in incoming:\n    # Handle the structure where the actual data is wrapped in a \"json\" property\n    if isinstance(item, dict) and \"json\" in item and isinstance(item[\"json\"], dict):\n        data = item.get(\"json\", {})\n    elif isinstance(item, dict):\n        data = item\n    else:\n        data = {}\n        \n    r = process_prospect(data)\n    \n    if r:\n        # Wrap the result back in the n8n item format\n        out.append({\"json\": r})\n\nreturn out"
+      },
+      "id": "25b3e575-8322-4609-aa98-1dba58a73d5d",
+      "name": "Validate Format",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3312,
+        -1984
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "d1479080-b4e4-4cb0-882d-22bc05a39a2a",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2560,
+        -2416
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ZKxO84fZyNlAgklz",
+          "name": "n8n free OpenAI API credits"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sendTo": "jenishshekhada.fl@gmail.com",
+        "subject": "=Daily Lead Summary - {{ new Date().toLocaleDateString() }}",
+        "message": "={{ $json.email_body_html }}",
+        "options": {}
+      },
+      "id": "0bc9844a-ba54-431b-8038-b60a68fa6bec",
+      "name": "Send Summary Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -3120,
+        1824
+      ],
+      "webhookId": "a69f8d3b-0bba-47de-a678-b4946b82d75a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WvHWXyYLnxC6ZmHT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3632,
+        1824
+      ],
+      "id": "38c68f96-f445-47bd-be78-ee5ea869c1f5",
+      "name": "Combine Leads Data"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "leads = _items\n\ndef val(v):\n    return v if v not in [\"\", None] else \"<span style='color:#999;'>—</span>\"\n\nhtml = \"\"\"\n<div style=\"font-family:Arial, Helvetica, sans-serif; padding:20px; color:#222;\">\n  <h2 style=\"margin-bottom:5px; color:#0A66C2;\">Daily Lead Activity Report</h2>\n  <p style=\"margin-top:0; font-size:14px;\">Here is the latest update on all lead activities.</p>\n  <hr style=\"border:0; border-top:1px solid #e5e5e5; margin:20px 0;\">\n  <h3 style=\"color:#444; margin-bottom:10px;\">Lead Summary</h3>\n\"\"\"\n\nhot_count = len([l for l in leads if l[\"json\"].get(\"Label\") == \"Hot\"])\npending_count = len([l for l in leads if l[\"json\"].get(\"Outreach Status\") == \"Pending\"])\n\nhtml += f\"\"\"\n  <p style=\"font-size:14px;\"><strong>Hot Leads:</strong> {hot_count}</p>\n  <p style=\"font-size:14px;\"><strong>Pending Outreach:</strong> {pending_count}</p>\n  <h3 style=\"margin-top:30px; color:#444;\">Lead Details</h3>\n  <table style=\"width:100%; border-collapse:collapse; margin-top:10px;\">\n    <tr style=\"background:#f5f5f5; text-align:left;\">\n      <th style=\"padding:8px; border:1px solid #ddd;\">Name</th>\n      <th style=\"padding:8px; border:1px solid #ddd;\">Company</th>\n      <th style=\"padding:8px; border:1px solid #ddd;\">Industry</th>\n      <th style=\"padding:8px; border:1px solid #ddd;\">Email</th>\n      <th style=\"padding:8px; border:1px solid #ddd;\">Phone</th>\n      <th style=\"padding:8px; border:1px solid #ddd;\">Status</th>\n      <th style=\"padding:8px; border:1px solid #ddd;\">Next Action</th>\n    </tr>\n\"\"\"\n\nfor l in leads:\n    j = l[\"json\"]\n    html += f\"\"\"\n    <tr>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Full Name\"))}</td>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Company\"))}</td>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Industry\"))}</td>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Email\"))}</td>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Phone\"))}</td>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Outreach Status\"))}</td>\n      <td style=\"padding:8px; border:1px solid #ddd;\">{val(j.get(\"Next Action Date\"))}</td>\n    </tr>\n    \"\"\"\n\nhtml += \"\"\"\n  </table>\n  <hr style=\"border:0; border-top:1px solid #e5e5e5; margin:30px 0;\">\n  <p style=\"font-size:12px; color:#777;\">Automated report generated by n8n Lead System.</p>\n</div>\n\"\"\"\n\nreturn [{\n    \"json\": {\n        \"email_body_html\": html,\n        \"hot_leads\": hot_count,\n        \"pending_outreach\": pending_count\n    }\n}]\n"
+      },
+      "id": "ac036883-7042-4bfd-bbc7-e43f9bf0f1bf",
+      "name": "Build Summary Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3408,
+        1824
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "4aaeecd0-0edf-42af-b103-8e19c4312354",
+      "name": "Get Hot Leads Summary",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4032,
+        2096
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\ntoday.setHours(0, 0, 0, 0); // Set time to midnight this morning\n\nconst filteredItems = [];\n\nfor (const item of $input.all()) {\n    const actionDateStr = item.json['Next Action Date'];\n\n    if (actionDateStr) {\n        try {\n            // Converts the ISO string into a JavaScript Date object\n            const actionDate = new Date(actionDateStr); \n            if (actionDate < today) {\n                filteredItems.push(item);\n            }\n        } catch (error) {\n            // Optional: Log an error if a date string can't be parsed\n            console.error(`Failed to parse date: \"${actionDateStr}\". Skipping item.`);\n        }\n    }\n}\n\nreturn filteredItems;"
+      },
+      "id": "5dc301b8-976b-4a2a-9793-128dc8a1df9b",
+      "name": "Filter Follow-Up Leads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3904,
+        1808
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "9b3bc2fa-bf83-44d3-846e-b77920569c21",
+      "name": "Get Follow-Up Leads",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4128,
+        1808
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "258af307-17ee-4ee6-a110-2e8c090ab309",
+      "name": "Daily Cron Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4384,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.scraperapi.com/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "878cff26fafe833ccb32f8cefc9b289a"
+            },
+            {
+              "name": "url",
+              "value": "={{ 'https://www.linkedin.com/search/results/people/?keywords=' + ($json.search_query || 'mobile app development services') }}"
+            },
+            {
+              "name": "render",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "ecc99dd1-1b0a-4bf9-a71f-76cb71427003",
+      "name": "Scrape LinkedIn Prospects (ScraperAPI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -3888,
+        -4144
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "d2c707b9-767c-4ddd-a231-53d6757b17ea",
+      "name": "Daily Prospect Scraper Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4416,
+        -4144
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "manual-prospect",
+        "options": {}
+      },
+      "id": "e0a2fe09-3c11-453e-ba37-a0ff1a9b1d0d",
+      "name": "Manual Prospect Input (Webhook)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -3504,
+        -3680
+      ],
+      "webhookId": "82646c79-db2a-4904-83ef-cac9d4b94484"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "SMS Outreach Status": "Success"
+          },
+          "matchingColumns": [
+            "Phone"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "2a468833-82c0-4186-a352-1bef6b75a339",
+      "name": "Update Status: SMS",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1200,
+        -2624
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "SMS Outreach Status": "Failed",
+            "Phone Validation": "Invalid"
+          },
+          "matchingColumns": [
+            "Phone"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b9593c7a-9214-46ef-a77e-ce1ee5a045be",
+      "name": "Update Status: SMS Invalid",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2624,
+        -2192
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        }
+      },
+      "id": "2a9ae20d-4054-4755-9696-e073296d1d5d",
+      "name": "Gmail Reply Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -4480,
+        208
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WvHWXyYLnxC6ZmHT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "# --- START: Manual Definition for Testing (REMOVE IN N8N) ---\n# This block simulates the data structure passed from a Gmail/IMAP Trigger.\n# It is necessary when testing the code outside the n8n environment.\ninput = [\n    {\n        'json': {\n            'id': 'aBc123XyZ',\n            'snippet': 'Hi, I received your email about SharePoint migration. We are interested in scheduling a call next week.',\n            'payload': {\n                'headers': [\n                    {'name': 'From', 'value': 'John Doe <john.doe@techcorp.com>'},\n                    {'name': 'Subject', 'value': 'Re: Your Offer for TechCorp Solutions'},\n                    # ... other headers\n                ]\n            }\n        }\n    }\n]\n# --- END: Manual Definition for Testing ---\n\n# --- START: Node 14: Inbound Reply Watcher Parser (Actual n8n Logic) ---\n\n# Note: The input data in n8n is accessed via 'input'\nitem = input[0]\n\n# Initialize variables\nemail = ''\nsubject = ''\nsender_email = ''\n\n# --- 1. Extract Headers and Subject ---\n# Need to access 'json' layer first in n8n\nif 'payload' in item['json'] and 'headers' in item['json']['payload']:\n    for header in item['json']['payload']['headers']:\n        header_name = header.get('name')\n        if header_name == 'From':\n            email = header.get('value', '')\n        elif header_name == 'Subject':\n            subject = header.get('value', '')\n\n# --- 2. Parse Email Address using String Manipulation ---\n# Look for the angle brackets to isolate the email.\nstart_index = email.find('<')\nend_index = email.find('>')\n\nif start_index != -1 and end_index != -1 and end_index > start_index:\n    # Found the format: extract the text between the brackets\n    sender_email = email[start_index + 1:end_index]\nelse:\n    # If brackets are not found, use the whole string and clean it up.\n    if '@' in email:\n        # Tries to isolate the last word (which should be the email)\n        sender_email = email.split(' ')[-1].strip()\n    else:\n        sender_email = email\n\n# --- 3. Extract Body and Message ID ---\nbody = item['json'].get('snippet', '')\nmessage_id = item['json'].get('id', '')\n\n# Return the result\nreturn [\n    {\n        'json': {\n            'sender_email': sender_email.lower(), # Ensures case-insensitive lookup later\n            'subject': subject,\n            'body': body,\n            'message_id': message_id\n        }\n    }\n]"
+      },
+      "id": "3047261c-1607-464a-b42f-99a46b67459a",
+      "name": "Extract Reply Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4256,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.sender_email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2537750f-4234-4aab-b3be-6266faf0f7ed",
+      "name": "Lookup Lead in CRM",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4032,
+        208
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2067c2d6-76e5-4ccf-a619-9404edf42b55",
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "Unsubscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3168,
+        528
+      ],
+      "id": "9ef13c73-2b23-4809-ba9e-f8f770969407",
+      "name": "Branch by Intent (IF Node 2)"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Lookup Lead in CRM').first().json.Email }}",
+            "Last Reply": "{{ $('Extract Reply Data1').first().json.body }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "07c455c3-ba0e-43bd-ba48-f12573e16409",
+      "name": "Update Status - Manual Review",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2912,
+        832
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Lookup Lead in CRM').first().json.Email }}",
+            "Last Reply": "{{ $('Extract Reply Data1').first().json.body }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1948e0e6-3a53-48e8-b08a-fac05feb5ba2",
+      "name": "Update Status - Interested",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2608,
+        -80
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=Generate a call script for:\n\nLead: {{ $('Lookup Lead in CRM').first().json.Name }} at {{ $('Lookup Lead in CRM').first().json.Company }}\nRole: {{ $('Lookup Lead in CRM').first().json.Role }}\nTheir Reply: {{ $('Extract Reply Data').first().json.body }}\nPain Points: {{ $('Lookup Lead in CRM').first().json['Audience Segment'] }}\nService USP: We provide comprehensive IT services and digital transformation solutions",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "opening",
+              "description": "Opening statement for the call"
+            },
+            {
+              "name": "discovery_questions",
+              "description": "3-5 discovery questions to ask"
+            },
+            {
+              "name": "value_proposition",
+              "description": "Tailored value proposition based on their reply"
+            },
+            {
+              "name": "objection_handling",
+              "description": "Potential objections and responses"
+            },
+            {
+              "name": "closing",
+              "description": "Call closing and next steps"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "You are the Call Script Generator Agent. Create personalized call scripts for sales representatives based on interested lead replies.\n\nThe script should:\n- Reference their specific reply and interest\n- Include discovery questions tailored to their role and company\n- Present value proposition addressing their pain points\n- Anticipate objections and provide responses\n- Suggest clear next steps\n\nReturn ONLY the structured call script data."
+        }
+      },
+      "id": "e30399c7-222b-4001-b91e-6c6abe9644a5",
+      "name": "Call Script Generator",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -3232,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "6409678a-2dee-4ed5-8f2b-2a9c190228eb",
+      "name": "OpenAI Chat Model - Call Script",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3152,
+        144
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ZKxO84fZyNlAgklz",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "1a9bddcb-a4e9-481c-9e89-f1ed6e222bc2",
+      "name": "OpenAI Chat Model - Classification",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3728,
+        432
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ZKxO84fZyNlAgklz",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email Outreach Status": "Failed",
+            "Email": "={{ $json[\"Email\"] }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "93e0399d-d04a-4aed-a31e-0139b87aeba3",
+      "name": "Update Status: Invalid Email1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1680,
+        -1312
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "ac9a58cb-b3f6-4d71-b996-53d6a4465f47",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2560,
+        -1536
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ZKxO84fZyNlAgklz",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1giQupSKmgrr5kIvIrNSfJBlFYKhn4_kGt86L3DhHe0I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $('Lookup Lead in CRM').first().json.Email }}",
+            "Last Reply": "{{ $('Extract Reply Data1').first().json.body }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Scraped At",
+              "displayName": "Scraped At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Label",
+              "displayName": "Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Outreach Status",
+              "displayName": "Email Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SMS Outreach Status",
+              "displayName": "SMS Outreach Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Next Action Date",
+              "displayName": "Next Action Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Last Reply",
+              "displayName": "Last Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Outreach Date",
+              "displayName": "Outreach Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Validation",
+              "displayName": "Email Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Validation",
+              "displayName": "Phone Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "76840d7e-7fc4-4ef3-9621-6df2a943cf52",
+      "name": "Update Status - Unsubscribed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2880,
+        304
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "H8IlZ41DHVcQbFh3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "Interested",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4fc16517-a57a-4cea-87dc-a96b7af66be9",
+      "name": "Branch by Intent",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3456,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "voice": {
+          "__rl": true,
+          "mode": "list",
+          "value": {}
+        },
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        -2240,
+        192
+      ],
+      "id": "7161c16b-131b-4004-a6c2-3d0f8f9114fc",
+      "name": "Get a voice",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## **🟨    AI: Generate SMS Content and Send an SMS Node Is Not Working**\n\n**Reason:** Missing or invalid API credentials.\nPlease open this node and update the required API key / authentication.\n",
+        "width": 576,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2624,
+        -2944
+      ],
+      "typeVersion": 1,
+      "id": "88b7794a-672f-440c-b428-b7078417a471",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## **🟨       Scrape LinkedIn Prospects (ScraperAPI) Node Is Not Working**\n\n**Reason:** Missing or invalid API credentials.\nPlease open this node and update the required API key / authentication.\n",
+        "height": 192,
+        "width": 464,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4064,
+        -4448
+      ],
+      "typeVersion": 1,
+      "id": "09bfce7f-8f8b-40fe-ac63-eee641741c91",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## **🟨      Call Script Generator and Make a call Node Is Not Working**\n\n**Reason:** Missing or invalid API credentials.\nPlease open this node and update the required API key / authentication.\n",
+        "width": 576,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3280,
+        -352
+      ],
+      "typeVersion": 1,
+      "id": "5198b3db-6355-4108-8189-14af7679f9d4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "from": "+91 9510117047",
+        "to": "={{ $json[\"\"+'Phone Number'] }}",
+        "message": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        -2624
+      ],
+      "id": "aaaffa61-2f6e-402c-ac09-dedd5b10b8e3",
+      "name": "Send an SMS",
+      "credentials": {
+        "twilioApi": {
+          "id": "jKU3m01OC0FxbAYb",
+          "name": "Twilio account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## **🟨    AI: Generate Email Content Is Not Working**\n\n**Reason:** Missing or invalid API credentials.\nPlease open this node and update the required API key / authentication.\n",
+        "width": 576,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2464,
+        -1984
+      ],
+      "typeVersion": 1,
+      "id": "7f0546b7-2b19-4b25-9f51-76fb62c5fa56",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "resource": "call",
+        "from": "<__PLACEHOLDER_VALUE__Your Twilio Phone Number (e.g., +14155238886)__>",
+        "to": "={{ $('Lookup Lead in CRM').first().json.Phone }}",
+        "message": "={{ $('Call Script Generator').first().json.opening }}\n\nDiscovery Questions:\n{{ $('Call Script Generator').first().json.discovery_questions }}\n\nValue Proposition:\n{{ $('Call Script Generator').first().json.value_proposition }}\n\nObjection Handling:\n{{ $('Call Script Generator').first().json.objection_handling }}\n\nClosing:\n{{ $('Call Script Generator').first().json.closing }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -2880,
+        -80
+      ],
+      "id": "ee71e9f5-dacc-4204-9cce-c51723c06841",
+      "name": "Make a call",
+      "credentials": {
+        "twilioApi": {
+          "id": "XbnJR4kjjApTMBMG",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## **🟨      Reply Classification Agent  Node Is Not Working**\n\n**Reason:** Missing or invalid API credentials.\nPlease open this node and update the required API key / authentication.\n",
+        "width": 576,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3968,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "5a1be49a-1e9e-4240-8fbc-39083e65599a",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "text": "=Email Reply: {{ $('Extract Reply Data').first().json.body }}\n\nOriginal Subject: {{ $('Extract Reply Data').first().json.subject }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "intent",
+              "description": "Classification of reply intent: Interested, Unsubscribe, or Other"
+            },
+            {
+              "name": "sentiment",
+              "description": "Overall sentiment: Positive, Neutral, or Negative"
+            },
+            {
+              "name": "next_action",
+              "description": "Recommended next action based on the reply"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "You are the Reply Classification Agent. Analyze email replies to cold outreach and classify the sender's intent.\n\nClassification Categories:\n- Interested: Reply shows interest, asks questions, requests meeting/call, or wants more information\n- Unsubscribe: Reply requests to stop contact, unsubscribe, or remove from list\n- Other: Ambiguous, out-of-office, or requires manual review\n\nReturn ONLY the structured classification data."
+        }
+      },
+      "id": "4f1d9e6b-7e60-4a59-b47a-b917fe02ed24",
+      "name": "Reply Classification Agent",
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -3808,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## **🟨   Get a voiceNode Is Not Working**\n\n**Reason:** Missing or invalid API credentials.\nPlease open this node and update the required API key / authentication.\n",
+        "width": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2192,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "026c6332-053b-4611-866b-45b64da7b9ba",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## **I'm a note**\n\nThis node is **not working** because **API credentials are missing**.\n**Double click** to fix or edit.\n[Guide](https://docs.n8n.io/workflows/sticky-notes/)\n",
+        "height": 176,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5440,
+        -4896
+      ],
+      "typeVersion": 1,
+      "id": "9f1f9036-f083-441f-96f1-1887313da673",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## **I'm a note**\n\nThis Manual Prospect Input (Webhook) node is **only for testing** because it receives **fake data / fake leads**.\n**Double click** to edit me.\n[Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "width": 384,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3648,
+        -3440
+      ],
+      "typeVersion": 1,
+      "id": "ec545dad-3fc0-416c-a520-ad3c63096bc8",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "try:\n    incoming = _items\nexcept NameError:\n    incoming = []\n\nif not isinstance(incoming, list):\n    incoming = [incoming]\n\ndef safe_get(obj, *keys, default=\"\"):\n    if not isinstance(obj, dict):\n        return default\n    for k in keys:\n        v = obj.get(k)\n        if v is not None and v != \"\":\n            return v\n    return default\n\ndef normalize_one(prospect):\n    name = safe_get(prospect, \"name\")\n    if not name:\n        first = safe_get(prospect, \"firstName\", default=\"\").strip()\n        last = safe_get(prospect, \"lastName\", default=\"\").strip()\n        name = (first + \" \" + last).strip() or \"N/A\"\n    \n    return {\n        \"name\": name,\n        \"email\": safe_get(prospect, \"email\"),\n        \"phone\": safe_get(prospect, \"phone\"),\n        \"linkedin\": safe_get(prospect, \"linkedin\"),\n        \"company\": safe_get(prospect, \"company\"),\n        \"title\": safe_get(prospect, \"title\"),\n        \"location\": safe_get(prospect, \"location\"),\n        \"industry\": safe_get(prospect, \"industry\"),\n        \"scrapedAt\": safe_get(prospect, \"scrapedAt\")\n    }\n\nprospects = []\n\nfor item in incoming:\n    payload = item.get(\"json\", item)\n\n    records = []\n    if isinstance(payload, dict) and isinstance(payload.get(\"data\"), list):\n        records = payload.get(\"data\")\n    elif isinstance(payload, list):\n        records = payload\n    elif isinstance(payload, dict):\n        records = [payload]\n    \n    for rec in records:\n        if isinstance(rec, dict):\n            prospects.append(normalize_one(rec))\n\nreturn [{'json': p} for p in prospects]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2576,
+        -3936
+      ],
+      "id": "8f76d98d-53e3-4f63-8cff-a580570f5bdf",
+      "name": "Normalize Raw Lead Data"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "try:\n    incoming = items\nexcept NameError:\n    try:\n        incoming = _items\n    except NameError:\n        incoming = []\n\nif incoming is None:\n    incoming = []\nelif not isinstance(incoming, list):\n    incoming = [incoming]\n\ndef normalize_email(e):\n    if not e:\n        return \"\"\n    s = str(e).strip().lower()\n    return s\n\ndef likely_email_from_values(d):\n    if not isinstance(d, dict):\n        return \"\"\n    for v in d.values():\n        if not v:\n            continue\n        vs = str(v).strip()\n        if \"@\" in vs and \" \" not in vs:\n            return vs\n    return \"\"\n\ndef valid_email(e):\n    if not e:\n        return False\n    if \"@\" not in e:\n        return False\n    if \" \" in e:\n        return False\n    parts = e.split(\"@\", 1)\n    if len(parts[0]) < 1 or len(parts[1]) < 3:\n        return False\n    return True\n\ndef normalize_phone(p):\n    if not p:\n        return \"\"\n    s = str(p)\n    digits = \"\".join(ch for ch in s if ch.isdigit())\n    return digits\n\ndef likely_phone_from_values(d):\n    if not isinstance(d, dict):\n        return \"\"\n    for v in d.values():\n        if not v:\n            continue\n        vs = str(v)\n        digits = \"\".join(ch for ch in vs if ch.isdigit())\n        if len(digits) >= 7:\n            return digits\n    return \"\"\n\ndef get_field(d, *keys):\n    if not isinstance(d, dict):\n        return \"\"\n    for k in keys:\n        v = d.get(k)\n        if v not in (None, \"\"):\n            return v\n    return \"\"\n\nseen = set()\nunique = []\nfor it in incoming:\n    j = it.get(\"json\") if isinstance(it, dict) else {}\n    if not isinstance(j, dict):\n        continue\n    if all(v in (None, \"\") for v in j.values()):\n        continue\n    raw_email = get_field(j, \"Email\", \"email\", \"Email Address\", \"E-mail\")\n    if not raw_email:\n        raw_email = likely_email_from_values(j)\n    raw_phone = get_field(j, \"Phone\", \"phone\", \"Phone Number\", \"Mobile\", \"Contact\")\n    if not raw_phone:\n        raw_phone = likely_phone_from_values(j)\n    em = normalize_email(raw_email)\n    ph = normalize_phone(raw_phone)\n    if not em or not ph:\n        continue\n    if not valid_email(em):\n        continue\n    key_em = (\"e\", em)\n    key_ph = (\"p\", ph)\n    if key_em in seen or key_ph in seen:\n        continue\n    seen.add(key_em)\n    seen.add(key_ph)\n    out = j.copy()\n    out[\"Email\"] = em\n    out[\"Phone\"] = ph\n    unique.append({\"json\": out})\n\nreturn unique\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4192,
+        -1984
+      ],
+      "id": "91694167-0d0f-4cde-821a-9cb24cf27c3d",
+      "name": "Lead Email & Phone Normalizer",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "content": "## LinkedIn Prospect Scraper or Manual Lead Collector\n\nThis workflow scrapes LinkedIn prospects using ScraperAPI and also accepts manual leads via webhook.\nIt may fail or stop if API credentials (ScraperAPI / LinkedIn extraction) are invalid or missing.\n\nDouble-click to edit me. \n[Guide](https://docs.n8n.io/workflows/sticky-notes/)\n",
+        "height": 192,
+        "width": 752
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4448,
+        -4832
+      ],
+      "typeVersion": 1,
+      "id": "b1c760d2-b7cb-4521-9a00-f62a20a43ba3",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## **LinkedIn Lead Outreach Automation (Validation)**\n\n**This workflow triggers when a new lead arrives.\nIt validates email + Indian phone format, removes duplicates, and only continues with real leads.\nIt also updates Google Sheets with SMS/email outreach status and normalizes all fields before the next steps.**\n\n[Guide](https://docs.n8n.io/workflows/sticky-notes/)\n",
+        "height": 192,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4480,
+        -2672
+      ],
+      "typeVersion": 1,
+      "id": "d768330a-ea4f-447d-928f-6a8873e1d7fe",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## **AI Auto-Reply → Lead Lookup → Intent Classification → CRM Update + Call Script Generator**\n\n**This workflow automatically captures Gmail replies, extracts sender details, matches the lead in Google Sheets CRM, classifies intent using AI, and updates the CRM accordingly. If the lead is interested, it generates a personalized call script using OpenAI and sends it to the sales team.**\n",
+        "height": 176,
+        "width": 688
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4496,
+        -432
+      ],
+      "typeVersion": 1,
+      "id": "be4c5f97-6405-455e-8a4a-db3f1362bef7",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "**Daily Lead Summary Automation**\n\nThis workflow runs every morning, pulls hot leads and overdue follow-up leads from Google Sheets, generates an HTML summary report, and emails the daily lead digest automatically.\n",
+        "height": 176,
+        "width": 720
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4432,
+        1392
+      ],
+      "typeVersion": 1,
+      "id": "d2f51108-aace-48e6-8a8c-c050f7aeff5d",
+      "name": "Sticky Note11"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Workflow Configuration1": {
+      "main": [
+        [
+          {
+            "node": "Scrape LinkedIn Prospects (ScraperAPI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check ScraperAPI Success": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Parse Prospect Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Prospects": {
+      "main": [
+        [
+          {
+            "node": "Normalize Raw Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Not Already Contacted": {
+      "main": [
+        [
+          {
+            "node": "Validate Format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Prospect Added Trigger": {
+      "main": [
+        [
+          {
+            "node": "Lead Email & Phone Normalizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outreach Configuration": {
+      "main": [
+        [
+          {
+            "node": "Check Not Already Contacted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Prospect Data": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Prospects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prospect Fields (Before Sheets)": {
+      "main": [
+        [
+          {
+            "node": "Append Prospect to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Outreach2": {
+      "main": [
+        [
+          {
+            "node": "TRUE: Update Status - Successful2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Format1": {
+      "main": [
+        [
+          {
+            "node": "Send Email Outreach2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an SMS/MMS/WhatsApp message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Email Content": {
+      "main": [
+        [
+          {
+            "node": "Send AI Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send AI Email": {
+      "main": [
+        [
+          {
+            "node": "Set Success Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Status: Invalid Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Success Status": {
+      "main": [
+        [
+          {
+            "node": "Update Status: Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Emails": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Status: Invalid Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Phone Numbers": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate SMS Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Status: SMS Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set SMS Success Status": {
+      "main": [
+        [
+          {
+            "node": "Update Status: SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate SMS Content": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Format": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Emails",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter Valid Phone Numbers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Generate SMS Content",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Leads Data": {
+      "main": [
+        [
+          {
+            "node": "Build Summary Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Summary Report": {
+      "main": [
+        [
+          {
+            "node": "Send Summary Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Hot Leads Summary": {
+      "main": [
+        [
+          {
+            "node": "Combine Leads Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter Follow-Up Leads": {
+      "main": [
+        [
+          {
+            "node": "Combine Leads Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Follow-Up Leads": {
+      "main": [
+        [
+          {
+            "node": "Filter Follow-Up Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Hot Leads Summary",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Follow-Up Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape LinkedIn Prospects (ScraperAPI)": {
+      "main": [
+        [
+          {
+            "node": "Check ScraperAPI Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Prospect Scraper Schedule": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Prospect Input (Webhook)": {
+      "main": [
+        [
+          {
+            "node": "Parse Prospect Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Reply Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Reply Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Reply Data": {
+      "main": [
+        [
+          {
+            "node": "Lookup Lead in CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Lead in CRM": {
+      "main": [
+        [
+          {
+            "node": "Reply Classification Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch by Intent (IF Node 2)": {
+      "main": [
+        [
+          {
+            "node": "Update Status - Unsubscribed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Status - Manual Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Script Generator": {
+      "main": [
+        [
+          {
+            "node": "Make a call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model - Call Script": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Call Script Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model - Classification": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reply Classification Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Generate Email Content",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch by Intent": {
+      "main": [
+        [
+          {
+            "node": "Call Script Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Branch by Intent (IF Node 2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS": {
+      "main": [
+        [
+          {
+            "node": "Set SMS Success Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Status: SMS Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make a call": {
+      "main": [
+        [
+          {
+            "node": "Update Status - Interested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply Classification Agent": {
+      "main": [
+        [
+          {
+            "node": "Branch by Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Raw Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Format Prospect Fields (Before Sheets)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Email & Phone Normalizer": {
+      "main": [
+        [
+          {
+            "node": "Outreach Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "02631f8d-0b6c-4eb5-9e8b-e7241c0b23ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3712984092a82a4d38eb2138ef547f4abaf87fef118fa7da8a1a3ed10ab6e957"
+  },
+  "id": "wqtnK5bqA7vfdPpx",
+  "tags": []
+}
